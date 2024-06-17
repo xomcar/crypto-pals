@@ -12,4 +12,14 @@ Following [Cryptopals](https://cryptopals.com) challenge set.
 - [ ] AES in ECB mode
 - [ ] Detect AES in ECB mode 
 
+# Set 2
+
+# Set 3
+
+# Set 4
+
+# Set 5
+
+# Set 6
+
 
