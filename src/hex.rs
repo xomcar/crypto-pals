@@ -14,3 +14,21 @@ pub fn encode_hex(bytes: &[u8]) -> String {
     }
     return s;
 }
+
+pub trait VecU8Ext {
+    fn to_ascii_string(&self) -> String;
+}
+
+impl VecU8Ext for Vec<u8> {
+    fn to_ascii_string(&self) -> String {
+        self.iter()
+            .map(|&b| {
+                if b <= 127 {
+                    b as char
+                } else {
+                    '?' // Replace non-ASCII characters with '?'
+                }
+            })
+            .collect::<String>()
+    }
+}
