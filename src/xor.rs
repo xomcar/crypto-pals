@@ -1,4 +1,4 @@
-pub fn xor(a: &[u8], b: &[u8]) -> Vec<u8> {
+pub fn fixed_xor(a: &[u8], b: &[u8]) -> Vec<u8> {
     if a.len() != b.len() {
         panic!("cannot xor different lenght buffer!")
     } else {
@@ -14,7 +14,7 @@ pub fn repeating_xor(plain_str: &str, key: &str) -> Vec<u8> {
     let plain = plain_str.as_bytes();
     let key_u8 = key.as_bytes();
     let extended_key = key_u8.repeat(plain.len() / key_u8.len() + 1);
-    xor(plain, &extended_key[0..plain.len()])
+    fixed_xor(plain, &extended_key[0..plain.len()])
 }
 
 #[test]
@@ -26,6 +26,6 @@ pub fn check_xor_algo() {
     let input1 = hex::decode(EXAMPLE_INPUT_1).unwrap();
     let input2 = hex::decode(EXAMPLE_INPUT_2).unwrap();
     let expected = hex::decode(EXAMPLE_OUTPUT).unwrap();
-    let output = xor::xor(&input1, &input2);
+    let output = xor::fixed_xor(&input1, &input2);
     assert_eq!(expected, output);
 }

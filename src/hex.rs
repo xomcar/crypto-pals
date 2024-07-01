@@ -1,34 +1,33 @@
-use std::{fmt::Write, num::ParseIntError};
+use std::fmt::Write;
 
-pub fn decode(s: &str) -> Result<Vec<u8>, ParseIntError> {
-    return (0..s.len())
-        .step_by(2)
-        .map(|i| u8::from_str_radix(&s[i..i + 2], 16))
-        .collect();
-}
-
-pub fn encode(bytes: &[u8]) -> String {
-    let mut s = String::with_capacity(bytes.len() * 2);
-    for &b in bytes {
-        write!(&mut s, "{:02x}", b).unwrap();
+pub fn decode(hex: &str) -> Result<Vec<u8>, &'static str> {
+    if hex.len() % 2 != 0 {
+        return Err("Hex string must have an even length");
     }
-    return s;
-}
 
-pub trait VecU8Ext {
-    fn to_ascii_string(&self) -> String;
-}
+    let mut output = Vec::new();
 
-impl VecU8Ext for Vec<u8> {
-    fn to_ascii_string(&self) -> String {
-        self.iter()
-            .map(|&b| {
-                if b <= 127 {
-                    b as char
-                } else {
-                    '?' // Replace non-ASCII characters with '?'
-                }
-            })
-            .collect::<String>()
+    for i in (0..hex.len()).step_by(2) {
+        let byte_str = &hex[i..i + 2];
+        let byte = u8::from_str_radix(byte_str, 16).map_err(|_| "Invalid hex string")?;
+        output.push(byte);
     }
+
+    Ok(output)
+}
+
+pub fn encode(data: &[u8]) -> String {
+    let mut s = String::with_capacity(data.len() * 2);
+    for byte in data {
+        write!(&mut s, "{:02x}", byte).unwrap();
+    }
+    s
+}
+
+#[test]
+pub fn test_hex() {
+    let encoded = encode(&[0xDE, 0xAD]);
+    let decoded = decode("DEAD").unwrap();
+    assert_eq!(encoded, "DEAD");
+    assert_eq!(decoded, [0xDE, 0xAD]);
 }

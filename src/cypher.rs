@@ -1,7 +1,5 @@
-use crate::{hex, hex::VecU8Ext, xor::xor};
+use crate::{hex, xor::fixed_xor};
 
-const SIZE: usize = 256;
-const ENCRYPTED: &str = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
 const LETTER_FREQUENCIES: [f32; 256] = {
     let mut frequencies = [0.0; 256];
     frequencies[b'a' as usize] = 8.4966;
@@ -34,22 +32,8 @@ const LETTER_FREQUENCIES: [f32; 256] = {
     frequencies
 };
 
-pub fn find_key(input: &str) -> Vec<u8> {
-    let mut map: Vec<(Vec<u8>, f32, u8)> = Vec::new();
-    for key in 0u8..u8::MAX {
-        let plain = hex::decode(input).unwrap();
-        let secret = vec![key; plain.len()];
-        let decrypted = xor(&secret, &plain);
-        // println!("{}", decrypted.to_ascii_string());
-        let score = get_score(&decrypted);
-        map.push((decrypted, score, key));
-    }
-    map.sort_by(|a, b| b.1.total_cmp(&a.1));
-    map.pop().unwrap().0
-}
-
-pub fn get_score(s: &Vec<u8>) -> f32 {
-    let mut freqs = [0; SIZE];
+pub fn get_english_lang_score(s: &[u8]) -> f32 {
+    let mut freqs = [0; 256];
     for &char in s {
         freqs[char as usize] += 1;
     }
@@ -61,11 +45,18 @@ pub fn get_score(s: &Vec<u8>) -> f32 {
     return score;
 }
 
-#[test]
-fn test_list() {
-    let guess = find_key(ENCRYPTED);
-    assert_eq!(
-        guess.to_ascii_string(),
-        "Cooking MC's like a pound of bacon"
-    )
+pub fn decrypt_single_byte_xor(input: &str) -> String {
+    let mut best_guess = String::new();
+    let mut best_score = f32::MAX;
+    for key in 0u8..u8::MAX {
+        let plain = hex::decode(input).unwrap();
+        let secret = vec![key; plain.len()];
+        let decrypted = fixed_xor(&secret, &plain);
+        let score = get_english_lang_score(&decrypted);
+        if score < best_score {
+            best_score = score;
+            best_guess = String::from_utf8(decrypted).unwrap();
+        }
+    }
+    best_guess
 }

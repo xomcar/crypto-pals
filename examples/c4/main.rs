@@ -1,29 +1,26 @@
 use std::fs;
 
-use crypto_bros::{
-    hex::{self, VecU8Ext},
-    xor::xor,
-    xor_cypher::get_score,
-};
+use crypto_bros::{cypher::get_english_lang_score, hex, xor::fixed_xor};
 
 const SOLUTION: &str = "Now that the party is jumping";
 
 fn main() {
     let data = fs::read_to_string("data/4.txt").expect("File not found");
     let mut best_score = f32::MAX;
-    let mut best_match = String::new();
+    let mut best_match: Vec<u8> = vec![];
     for input in data.lines() {
         let encrypted = hex::decode(input).unwrap();
         for key in 0..u8::MAX {
             let secret = vec![key; encrypted.len()];
-            let decrypted = xor(&secret, &encrypted);
-            let score = get_score(&decrypted);
+            let decrypted = fixed_xor(&secret, &encrypted);
+            let score = get_english_lang_score(&decrypted);
             if score < best_score {
                 best_score = score;
-                best_match = decrypted.to_ascii_string();
+                best_match = decrypted;
             }
         }
     }
-    assert_eq!(best_match.trim(), SOLUTION);
-    println!("{}", best_match.trim());
+    let result = String::from_utf8(best_match).unwrap();
+    assert_eq!(result.trim(), SOLUTION);
+    println!("{}", result.trim());
 }
