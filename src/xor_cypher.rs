@@ -37,7 +37,7 @@ const LETTER_FREQUENCIES: [f32; 256] = {
 pub fn find_key(input: &str) -> Vec<u8> {
     let mut map: Vec<(Vec<u8>, f32, u8)> = Vec::new();
     for key in 0u8..u8::MAX {
-        let plain = hex::decode_hex(input).unwrap();
+        let plain = hex::decode(input).unwrap();
         let secret = vec![key; plain.len()];
         let decrypted = xor(&secret, &plain);
         // println!("{}", decrypted.to_ascii_string());

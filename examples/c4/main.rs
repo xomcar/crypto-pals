@@ -6,12 +6,14 @@ use crypto_bros::{
     xor_cypher::get_score,
 };
 
+const SOLUTION: &str = "Now that the party is jumping";
+
 fn main() {
     let data = fs::read_to_string("data/4.txt").expect("File not found");
     let mut best_score = f32::MAX;
     let mut best_match = String::new();
     for input in data.lines() {
-        let encrypted = hex::decode_hex(input).unwrap();
+        let encrypted = hex::decode(input).unwrap();
         for key in 0..u8::MAX {
             let secret = vec![key; encrypted.len()];
             let decrypted = xor(&secret, &encrypted);
@@ -22,5 +24,6 @@ fn main() {
             }
         }
     }
-    println!("{}", best_match);
+    assert_eq!(best_match.trim(), SOLUTION);
+    println!("{}", best_match.trim());
 }
