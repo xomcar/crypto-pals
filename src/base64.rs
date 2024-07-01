@@ -98,6 +98,7 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, &'static str> {
     Ok(decoded)
 }
 
+
 #[test]
 fn check_base64_algo() {
     use crate::{base64, hex};
@@ -107,7 +108,8 @@ fn check_base64_algo() {
         "SSdtIGtpbGxpbmcgeW91ciBicmFpbiBsaWtlIGEgcG9pc29ub3VzIG11c2hyb29t";
     let hex_decoded = hex::decode(EXAMPLE_INPUT).unwrap();
     let encoded_result = base64::encode(&hex_decoded);
-    let decoded_result = base64::decode(EXAMPLE_OUTPUT);
+    let decoded_result = base64::decode(EXAMPLE_OUTPUT).unwrap();
+    let decoded_result_hex = hex::encode(&decoded_result);
     assert_eq!(encoded_result, EXAMPLE_OUTPUT);
-    assert_eq!(decoded_result.unwrap(), hex_decoded);
+    assert_eq!(decoded_result_hex, EXAMPLE_INPUT);
 }

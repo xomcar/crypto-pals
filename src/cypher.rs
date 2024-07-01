@@ -1,4 +1,4 @@
-use crate::{hex, xor::fixed_xor};
+use crate::xor::fixed_xor;
 
 const LETTER_FREQUENCIES: [f32; 256] = {
     let mut frequencies = [0.0; 256];
@@ -45,18 +45,38 @@ pub fn get_english_lang_score(s: &[u8]) -> f32 {
     return score;
 }
 
-pub fn decrypt_single_byte_xor(input: &str) -> String {
-    let mut best_guess = String::new();
+pub fn crack_single_byte_xor(input: &[u8]) -> (Vec<u8>, u8) {
+    let mut best_guess = vec![];
     let mut best_score = f32::MAX;
+    let mut key_guess: u8 = 0;
     for key in 0u8..u8::MAX {
-        let plain = hex::decode(input).unwrap();
-        let secret = vec![key; plain.len()];
-        let decrypted = fixed_xor(&secret, &plain);
+        let secret = vec![key; input.len()];
+        let decrypted = fixed_xor(&secret, &input);
         let score = get_english_lang_score(&decrypted);
         if score < best_score {
             best_score = score;
-            best_guess = String::from_utf8(decrypted).unwrap();
+            key_guess = key;
+            best_guess = decrypted;
         }
     }
-    best_guess
+    (best_guess, key_guess)
+}
+
+pub fn hamming_dist(a: &[u8], b: &[u8]) -> u32 {
+    assert_eq!(a.len(), b.len());
+    let mut dist = 0;
+    for (c1, c2) in a.into_iter().zip(b) {
+        let t = c1 ^ c2;
+        dist += u8::count_ones(t);
+        // for i in 0..8 {
+        //     dist += (t >> i & 0x01) as u32;
+        // }
+    }
+    dist
+}
+
+#[test]
+pub fn test_hamming() {
+    let dist = hamming_dist("this is a test".as_bytes(), "wokka wokka!!!".as_bytes());
+    assert_eq!(dist, 37);
 }

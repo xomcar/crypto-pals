@@ -10,10 +10,8 @@ pub fn fixed_xor(a: &[u8], b: &[u8]) -> Vec<u8> {
     }
 }
 
-pub fn repeating_xor(plain_str: &str, key: &str) -> Vec<u8> {
-    let plain = plain_str.as_bytes();
-    let key_u8 = key.as_bytes();
-    let extended_key = key_u8.repeat(plain.len() / key_u8.len() + 1);
+pub fn repeating_xor(plain: &[u8], key: &[u8]) -> Vec<u8> {
+    let extended_key = key.repeat(plain.len() / key.len() + 1);
     fixed_xor(plain, &extended_key[0..plain.len()])
 }
 

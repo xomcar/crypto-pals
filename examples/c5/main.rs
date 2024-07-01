@@ -8,7 +8,7 @@ const ENCRYPTED_SOLUTION: &str =
 
 const KEY: &str = "ICE";
 fn main() {
-    let enc = xor::repeating_xor(STANZA, KEY);
+    let enc = xor::repeating_xor(STANZA.as_bytes(), KEY.as_bytes());
     let hex_enc = hex::encode(&enc);
     assert_eq!(hex_enc, ENCRYPTED_SOLUTION);
     println!("{}", hex_enc);
