@@ -28,6 +28,6 @@ pub fn encode(data: &[u8]) -> String {
 pub fn test_hex() {
     let encoded = encode(&[0xDE, 0xAD]);
     let decoded = decode("DEAD").unwrap();
-    assert_eq!(encoded, "DEAD");
+    assert_eq!(encoded, "dead");
     assert_eq!(decoded, [0xDE, 0xAD]);
 }

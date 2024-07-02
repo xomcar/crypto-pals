@@ -1,6 +1,6 @@
 use std::fs;
 
-use crypto_bros::{cypher::get_english_lang_score, hex, xor::fixed_xor};
+use crypto_bros::{hex, xor::fixed_xor, xor::get_english_lang_score};
 
 const SOLUTION: &str = "Now that the party is jumping";
 
