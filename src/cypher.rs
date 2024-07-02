@@ -1,4 +1,6 @@
-use crate::xor::{self, fixed_xor};
+use crate::xor::fixed_xor;
+use itertools::Itertools;
+use std::cmp::min;
 
 const LETTER_FREQUENCIES: [f32; 256] = {
     let mut frequencies = [0.0; 256];
@@ -100,6 +102,35 @@ pub fn hamming_dist(a: &[u8], b: &[u8]) -> u32 {
         // }
     }
     dist
+}
+
+pub fn guess_keysize(data: &[u8], max_guesses: usize) -> Vec<(f32, usize)> {
+    let mut guess_map: Vec<(f32, usize)> = vec![];
+    let max_key_size = min(40, data.len() / 4);
+    for key_size in 2..max_key_size {
+        let first = &data[0..1 * key_size];
+        let second = &data[1 * key_size..2 * key_size];
+        let third = &data[2 * key_size..3 * key_size];
+        let fourth = &data[3 * key_size..4 * key_size];
+        let chunks = [first, second, third, fourth];
+        let elements = chunks.iter().combinations(2);
+        let mut combs = 0;
+        let dist: u32 = elements
+            .into_iter()
+            .map(|v| {
+                combs += 1;
+                hamming_dist(v[0], v[1])
+            })
+            .sum();
+        let norm_dist = (dist / combs) as f32 / key_size as f32;
+        guess_map.push((norm_dist, key_size));
+    }
+    guess_map.sort_by(|a, b| a.0.total_cmp(&b.0));
+    //println!("{:?}", guess_map);
+    guess_map[0..max_guesses]
+        .into_iter()
+        .map(|(conf, sz)| (*conf, *sz))
+        .collect()
 }
 
 #[test]

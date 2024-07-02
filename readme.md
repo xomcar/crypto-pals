@@ -3,14 +3,14 @@ This repo is a learning tool for learning a bit of rust and cryptography.
 Following [Cryptopals](https://cryptopals.com) challenge set.
 
 # Set 1
-- [x] Convert hex to base64
-- [x] Fixed XOR
-- [ ] Single-byte XOR cipher
-- [ ] Detect single-character XOR
-- [ ] Implement repeating-key XOR
-- [ ] Break repeating-key XOR
-- [ ] AES in ECB mode
-- [ ] Detect AES in ECB mode 
+- [x] 1. Convert hex to base64
+- [x] 2. Fixed XOR
+- [x] 3. Single-byte XOR cipher
+- [x] 4. Detect single-character XOR
+- [x] 5. Implement repeating-key XOR
+- [x] 6. Break repeating-key XOR
+- [ ] 7. AES in ECB mode
+- [ ] 8. Detect AES in ECB mode 
 
 # Set 2
 
