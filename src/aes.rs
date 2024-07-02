@@ -31,3 +31,19 @@ pub fn has_duplicates(ct : &[u8], block_size : usize) -> usize {
         }
     same
 }
+
+pub fn pad(s :&str, sz : usize) -> String {
+    let padding = (sz - s.len()) as u8;
+    let mut res = s.to_string();
+    for _ in 0..padding {
+        res.push(padding as char);
+    }
+    res
+}
+
+#[test]
+pub fn test_padding() {
+    let data = "YELLOW SUBMARINE";
+    let padded_data = pad(data, 20);
+    assert_eq!(padded_data, "YELLOW SUBMARINE\x04\x04\x04\x04");
+}

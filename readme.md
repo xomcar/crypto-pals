@@ -13,6 +13,8 @@ Following [Cryptopals](https://cryptopals.com) challenge set.
 - [x] 8. Detect AES in ECB mode 
 
 # Set 2
+- [x] 9. Implement PKCS#7 padding
+- [] 10. Implement CBC mode
 
 # Set 3
 
