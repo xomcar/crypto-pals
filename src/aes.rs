@@ -15,3 +15,19 @@ pub fn decrypt(data : &[u8], key : &[u8]) -> String {
 
     blocks.iter().flatten().map(|&x| x as char).collect()
 }
+
+pub fn has_duplicates(ct : &[u8], block_size : usize) -> usize {
+    let mut same = 0;
+        let n_chunks = ct.len() / block_size;
+        for i1 in 0..n_chunks {
+            let chunk1 = &ct[block_size*i1..block_size*(i1+1)];
+            for i2 in 0..n_chunks {
+                if i1 == i2 {continue};
+                let chunk2 = &ct[block_size*i2..block_size*(i2+1)];
+                if chunk1 == chunk2 {
+                    same += 1;
+                }
+            }        
+        }
+    same
+}
