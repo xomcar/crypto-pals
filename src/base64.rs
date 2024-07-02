@@ -51,7 +51,6 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, &'static str> {
         if c == PADDING {
             break;
         }
-
         if let Ok(number) = match c {
             'A'..='Z' => Ok(c as u8 - 'A' as u8),
             'a'..='z' => Ok(c as u8 - 'a' as u8 + 26),
@@ -59,7 +58,7 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, &'static str> {
             '+' => Ok(62),
             '/' => Ok(63),
             '=' => Ok(64),  // Padding character
-            _ => Err("Invalid character in Base64 string"),
+            _ => Err(format!("Invalid character in Base64 string {}", c)),
         }{
             buffer[buffer_len] = number;
             buffer_len += 1;
