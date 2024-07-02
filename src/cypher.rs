@@ -1,4 +1,4 @@
-use crate::xor::fixed_xor;
+use crate::xor::{self, fixed_xor};
 
 const LETTER_FREQUENCIES: [f32; 256] = {
     let mut frequencies = [0.0; 256];
@@ -45,7 +45,7 @@ pub fn get_english_lang_score(s: &[u8]) -> f32 {
     return score;
 }
 
-pub fn crack_single_byte_xor(input: &[u8]) -> (Vec<u8>, u8) {
+pub fn crack_single_byte_xor_slow(input: &[u8]) -> (Vec<u8>, u8) {
     let mut best_guess = vec![];
     let mut best_score = f32::MAX;
     let mut key_guess: u8 = 0;
@@ -60,6 +60,33 @@ pub fn crack_single_byte_xor(input: &[u8]) -> (Vec<u8>, u8) {
         }
     }
     (best_guess, key_guess)
+}
+
+pub fn crack_single_byte_xor(input: &[u8]) -> (Vec<u8>, u8) {
+    let mut freqs: Vec<f32> = vec![];
+    for letter in 0..256 {
+        freqs
+            .push(input.iter().filter(|&c| *c == letter as u8).count() as f32 / input.len() as f32);
+    }
+
+    let mut best_guess = 0u8;
+    let mut best_score = f32::MAX;
+
+    for candidate in 0..=255 {
+        let mut score = 0.0f32;
+        for (letter, exp_freq) in freqs.iter().enumerate() {
+            score += f32::abs(exp_freq - LETTER_FREQUENCIES[letter as usize ^ candidate as usize])
+        }
+        if score < best_score {
+            best_score = score;
+            best_guess = candidate;
+        }
+    }
+
+    let key = vec![best_guess; input.len()];
+    let unenc = fixed_xor(input, &key);
+
+    (unenc, best_guess)
 }
 
 pub fn hamming_dist(a: &[u8], b: &[u8]) -> u32 {

@@ -1,6 +1,6 @@
 use crypto_bros::{
     base64,
-    cypher::{crack_single_byte_xor, hamming_dist},
+    cypher::{crack_single_byte_xor, crack_single_byte_xor_slow, hamming_dist},
     xor::repeating_xor,
 };
 use itertools::Itertools;
