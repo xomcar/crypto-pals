@@ -8,11 +8,11 @@
 - [x] 04 - Detect single-character XOR 
 - [x] 05 - Implement repeating-key XOR 
 - [x] 06 - Break repeating-key XOR 
-- [ ] 07 - AES in ECB mode 
-- [ ] 08 - Detect AES in ECB mode 
-- [ ] 09 - Implement PKCS#7 padding 
-- [ ] 10 - Implement CBC mode 
-- [ ] 11 - An ECB/CBC detection oracle 
+- [x] 07 - AES in ECB mode 
+- [x] 08 - Detect AES in ECB mode 
+- [x] 09 - Implement PKCS#7 padding 
+- [x] 10 - Implement CBC mode 
+- [x] 11 - An ECB/CBC detection oracle 
 - [ ] 12 - Byte-at-a-time ECB decryption (Simple) 
 - [ ] 13 - ECB cut-and-paste 
 - [ ] 14 - Byte-at-a-time ECB decryption (Harder) 
