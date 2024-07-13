@@ -2,8 +2,14 @@
 name = "crypto-bros"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 itertools = "0.13.0"
 aes = "0.7.5"
 rand = "0.8.5"
+
+[build-dependencies]
+quote = "1.0"
+proc-macro2 = "1.0"
+syn = "2.0.71"

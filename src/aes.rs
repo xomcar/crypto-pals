@@ -47,7 +47,7 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, &'static
     // Ok(dec)
 }
 
-pub fn encrypt_ecb(data: &[u8],key: &[u8]) -> Result<Vec<u8>, &'static str> {
+pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>, &'static str> {
     let key = GenericArray::clone_from_slice(key);
     let cipher = Aes128::new(&key);
     let chunk_size = key.len();

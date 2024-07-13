@@ -1,37 +1,7 @@
 use itertools::Itertools;
 use std::cmp::min;
 
-const LETTER_FREQUENCIES: [f32; 256] = {
-    let mut frequencies = [0.0; 256];
-    frequencies[b'a' as usize] = 8.4966 / 100.0;
-    frequencies[b'b' as usize] = 2.0720 / 100.0;
-    frequencies[b'c' as usize] = 4.5388 / 100.0;
-    frequencies[b'd' as usize] = 3.3844 / 100.0;
-    frequencies[b'e' as usize] = 11.160 / 100.0;
-    frequencies[b'f' as usize] = 1.8121 / 100.0;
-    frequencies[b'g' as usize] = 2.4705 / 100.0;
-    frequencies[b'h' as usize] = 3.0034 / 100.0;
-    frequencies[b'i' as usize] = 7.5448 / 100.0;
-    frequencies[b'j' as usize] = 0.1965 / 100.0;
-    frequencies[b'k' as usize] = 1.1016 / 100.0;
-    frequencies[b'l' as usize] = 5.4893 / 100.0;
-    frequencies[b'm' as usize] = 3.0129 / 100.0;
-    frequencies[b'n' as usize] = 6.6544 / 100.0;
-    frequencies[b'o' as usize] = 7.1635 / 100.0;
-    frequencies[b'p' as usize] = 3.1671 / 100.0;
-    frequencies[b'q' as usize] = 0.1962 / 100.0;
-    frequencies[b'r' as usize] = 7.5809 / 100.0;
-    frequencies[b's' as usize] = 5.7351 / 100.0;
-    frequencies[b't' as usize] = 6.9509 / 100.0;
-    frequencies[b'u' as usize] = 3.6308 / 100.0;
-    frequencies[b'v' as usize] = 1.0074 / 100.0;
-    frequencies[b'w' as usize] = 1.2899 / 100.0;
-    frequencies[b'x' as usize] = 0.2902 / 100.0;
-    frequencies[b'y' as usize] = 1.7779 / 100.0;
-    frequencies[b'z' as usize] = 0.2722 / 100.0;
-
-    frequencies
-};
+use crate::frequency::ENGLISH_ASCII_FREQUENCY;
 
 pub fn fixed_xor(a: &[u8], b: &[u8]) -> Vec<u8> {
     if a.len() != b.len() {
@@ -57,7 +27,7 @@ pub fn get_english_lang_score(s: &[u8]) -> f32 {
     }
     let mut score = 0f32;
     for (i, &freq) in freqs.iter().enumerate() {
-        let val = (freq as f32 / s.len() as f32) - LETTER_FREQUENCIES[i];
+        let val = (freq as f32 / s.len() as f32) - ENGLISH_ASCII_FREQUENCY[i];
         score += if val < 0.0 { -val } else { val };
     }
     return score;
@@ -93,7 +63,8 @@ pub fn crack_single_byte_xor(input: &[u8]) -> (Vec<u8>, u8) {
     for candidate in 0..=255 {
         let mut score = 0.0f32;
         for (letter, exp_freq) in freqs.iter().enumerate() {
-            score += f32::abs(exp_freq - LETTER_FREQUENCIES[letter as usize ^ candidate as usize])
+            score +=
+                f32::abs(exp_freq - ENGLISH_ASCII_FREQUENCY[letter as usize ^ candidate as usize])
         }
         if score < best_score {
             best_score = score;
@@ -142,7 +113,6 @@ pub fn guess_keysize(data: &[u8], max_guesses: usize) -> Vec<(f32, usize)> {
         guess_map.push((norm_dist, key_size));
     }
     guess_map.sort_by(|a, b| a.0.total_cmp(&b.0));
-    //println!("{:?}", guess_map);
     guess_map[0..max_guesses]
         .into_iter()
         .map(|(conf, sz)| (*conf, *sz))
