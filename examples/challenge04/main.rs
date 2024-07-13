@@ -1,15 +1,20 @@
+//Detect single-character XOR
+use crypto_bros::{
+    bench,
+    error::Result,
+    hex,
+    xor::{fixed_xor, get_english_lang_score},
+};
 use std::fs;
 
-use crypto_bros::{hex, xor::fixed_xor, xor::get_english_lang_score};
-
-const SOLUTION: &str = "Now that the party is jumping";
-
-fn main() {
-    let data = fs::read_to_string("data/4.txt").expect("File not found");
+fn solve() -> Result<()> {
+    let expected_str = "Now that the party is jumping\n";
+    let data = fs::read_to_string("data/4.txt")?;
     let mut best_score = f32::MAX;
     let mut best_match: Vec<u8> = vec![];
+    let mut best_key: u8 = 0;
     for input in data.lines() {
-        let encrypted = hex::decode(input).unwrap();
+        let encrypted = hex::decode(input)?;
         for key in 0..u8::MAX {
             let secret = vec![key; encrypted.len()];
             let decrypted = fixed_xor(&secret, &encrypted);
@@ -17,10 +22,19 @@ fn main() {
             if score < best_score {
                 best_score = score;
                 best_match = decrypted;
+                best_key = key;
             }
         }
     }
-    let result = String::from_utf8(best_match).unwrap();
-    assert_eq!(result.trim(), SOLUTION);
-    println!("{}", result.trim());
+    let result_str = String::from_utf8(best_match)?;
+    assert_eq!(result_str, expected_str);
+    println!(
+        "found key:\n\t{}\nwith score:\n\t{}\ndecrypted text:\n\t{}",
+        best_key, best_score, result_str
+    );
+    Ok(())
+}
+
+pub fn main() -> Result<()> {
+    bench::time(&solve)
 }
