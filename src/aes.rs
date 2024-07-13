@@ -1,11 +1,12 @@
+use crate::error::Result;
 use crate::xor::fixed_xor;
 use aes::cipher::{generic_array::GenericArray, BlockDecrypt, NewBlockCipher};
 use aes::{Aes128, BlockEncrypt};
 
-pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, &'static str> {
+pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     let chunk_size = key.len();
     if iv.len() != chunk_size {
-        return Err("Invalid iv len");
+        return Err("Invalid iv len".into());
     }
     let key = GenericArray::clone_from_slice(key);
     let cipher = Aes128::new(&key);
@@ -26,10 +27,10 @@ pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, &'static
     Ok(enc)
 }
 
-pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, &'static str> {
+pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     let chunk_size = key.len();
     if iv.len() != chunk_size {
-        return Err("Invalid iv len");
+        return Err("Invalid iv len".into());
     }
     let key = GenericArray::clone_from_slice(key);
     let cipher = Aes128::new(&key);
@@ -47,7 +48,7 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>, &'static
     // Ok(dec)
 }
 
-pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>, &'static str> {
+pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
     let key = GenericArray::clone_from_slice(key);
     let cipher = Aes128::new(&key);
     let chunk_size = key.len();
@@ -115,10 +116,10 @@ pub fn pkcs7(s: &[u8], sz: usize) -> Vec<u8> {
     res
 }
 
-pub fn strip_pkcs7(s: &[u8]) -> Result<Vec<u8>, &'static str> {
+pub fn strip_pkcs7(s: &[u8]) -> Result<Vec<u8>> {
     let last = s[s.len() - 1] as usize;
     if last == 0 || (s.len() < last) || s[s.len() - last..].windows(2).any(|w| w[0] != w[1]) {
-        return Err("Invalid padding");
+        return Err("Invalid padding".into());
     }
 
     Ok(s[0..(s.len() - last)].to_vec())

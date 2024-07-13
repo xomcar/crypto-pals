@@ -1,11 +1,13 @@
+use crate::error::Result;
+
 const BASE64_ENCODE_TABLE: [char; 64] = [
     'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S',
     'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
     'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
     '5', '6', '7', '8', '9', '+', '/',
 ];
-
 const PADDING: char = '=';
+
 
 pub fn encode(data: &[u8]) -> String {
     let mut encoded = String::new();
@@ -42,7 +44,7 @@ pub fn encode(data: &[u8]) -> String {
     encoded
 }
 
-pub fn decode(encoded: &str) -> Result<Vec<u8>, &'static str> {
+pub fn decode(encoded: &str) -> Result<Vec<u8>> {
     let mut decoded = vec![];
     let mut buffer = [0u8; 4];
     let mut buffer_len = 0;
@@ -78,7 +80,7 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>, &'static str> {
                 buffer_len = 0;
             }
         } else {
-            return Err("Invalid base64 string");
+            return Err("Invalid base64 string".into());
         }
     }
 

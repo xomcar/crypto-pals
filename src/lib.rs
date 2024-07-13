@@ -1,5 +1,6 @@
 pub mod aes;
 pub mod base64;
+pub mod error;
 pub mod frequency;
 pub mod hex;
 pub mod io;

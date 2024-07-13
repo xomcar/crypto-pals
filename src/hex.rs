@@ -1,8 +1,9 @@
+use crate::error::Result;
 use std::fmt::Write;
 
-pub fn decode(hex: &str) -> Result<Vec<u8>, &'static str> {
+pub fn decode(hex: &str) -> Result<Vec<u8>> {
     if hex.len() % 2 != 0 {
-        return Err("Hex string must have an even length");
+        return Err("Hex string must have an even length".into());
     }
 
     let mut output = Vec::new();

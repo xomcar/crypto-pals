@@ -1,7 +1,6 @@
+use crate::frequency::ENGLISH_ASCII_FREQUENCY;
 use itertools::Itertools;
 use std::cmp::min;
-
-use crate::frequency::ENGLISH_ASCII_FREQUENCY;
 
 pub fn fixed_xor(a: &[u8], b: &[u8]) -> Vec<u8> {
     if a.len() != b.len() {
