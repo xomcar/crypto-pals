@@ -1,4 +1,4 @@
-use crate::error::{Error, Result};
+use crate::error::Result;
 use crate::frequency::ENGLISH_ASCII_FREQUENCY;
 use std::cmp::min;
 
@@ -79,7 +79,7 @@ pub fn crack_single_byte(input: &[u8]) -> (Vec<u8>, u8) {
 
 pub fn hamming_dist(a: &[u8], b: &[u8]) -> Result<usize> {
     if a.len() != b.len() {
-        return Err(Error::from("length mismatch"));
+        return Err("length mismatch".into());
     }
     let mut dist = 0;
     for (c1, c2) in a.into_iter().zip(b) {

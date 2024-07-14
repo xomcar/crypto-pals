@@ -1,20 +1,20 @@
+//Detect AES in ECB mode
 use crypto_bros::error::Result;
-use crypto_bros::{aes::has_duplicates, hex, io::cypher_texts_from_base64_file};
+use crypto_bros::{aes::count_duplicates, hex, io::cypher_texts_from_base64_file};
 pub fn main() -> Result<()> {
-    let cts = cypher_texts_from_base64_file("data/8.txt")?;
-    let mut encoded_index = usize::MAX;
+    let cypher_texts = cypher_texts_from_base64_file("data/8.txt")?;
+    let expected_row = 132;
+    let mut encoded_row = usize::MAX;
     let mut max_same = 0;
-    for (ct_index, ct) in cts.iter().enumerate() {
-        let dups = has_duplicates(ct, 16);
+    for (row, cypher_text) in cypher_texts.iter().enumerate() {
+        let dups = count_duplicates(cypher_text, 16);
         if dups > max_same {
             max_same = dups;
-            encoded_index = ct_index;
+            encoded_row = row;
         }
     }
-    let encoded_data = hex::encode(&cts[encoded_index]);
-    println!(
-        "AES ECB encoded at row {}: \n{}",
-        encoded_index, encoded_data
-    );
+    let encoded_data = hex::encode(&cypher_texts[encoded_row]);
+    assert_eq!(expected_row, encoded_row);
+    println!("AES ECB encoded at row {}: \n{}", encoded_row, encoded_data);
     Ok(())
 }
