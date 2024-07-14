@@ -3,7 +3,7 @@ use crypto_bros::{
     bench,
     error::Result,
     hex,
-    xor::{fixed_xor, get_english_lang_score},
+    xor::{appy_fixed, get_english_lang_score},
 };
 use std::fs;
 
@@ -17,7 +17,7 @@ fn solve() -> Result<()> {
         let encrypted = hex::decode(input)?;
         for key in 0..u8::MAX {
             let secret = vec![key; encrypted.len()];
-            let decrypted = fixed_xor(&secret, &encrypted);
+            let decrypted = appy_fixed(&secret, &encrypted);
             let score = get_english_lang_score(&decrypted);
             if score < best_score {
                 best_score = score;

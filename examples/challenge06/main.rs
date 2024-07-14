@@ -1,37 +1,33 @@
-use std::fs;
+// Break repeating-key XOR
+use crypto_bros::{bench, error::Result, io, xor};
 
-use crypto_bros::{base64 as b64, xor};
-pub fn main() -> Result<(), std::io::Error> {
-    let mut base64_encoded_data = fs::read_to_string("data/6.txt").expect("File not found");
-    base64_encoded_data.retain(|c| !c.is_ascii_whitespace());
-    let start = std::time::Instant::now();
-    let xor_text_data = b64::decode(&base64_encoded_data).unwrap();
-    let key_sizes = xor::guess_keysize(&xor_text_data, 1);
-    for (_, ksz) in key_sizes {
-        let mut key: Vec<u8> = Vec::with_capacity(ksz);
-        for i in 0..ksz {
-            let picked: Vec<u8> = xor_text_data
-                .clone()
-                .into_iter()
-                .skip(i)
-                .step_by(ksz)
-                .collect();
-            let (_, key_guess) = xor::crack_single_byte_xor(&picked);
-            key.push(key_guess);
-        }
-        let unenc = xor::repeating_xor(&xor_text_data, &key);
-        println!(
-            "================ Guessed key size: {} =====================",
-            ksz
-        );
-        let key_str = String::from_utf8(key).unwrap();
-        println!("Guessed key: {}", key_str);
-        println!("===========================================================");
-        println!("{}", String::from_utf8(unenc).unwrap());
-
-        assert_eq!(key_str, "Terminator X: Bring the noise")
+pub fn solve() -> Result<()> {
+    let expected_key = "Terminator X: Bring the noise";
+    let enc_data = io::cypher_text_from_base64_file("data/6.txt")?;
+    let (_, key_size) = xor::guess_keysize(&enc_data, 1)?[0];
+    let mut key: Vec<u8> = Vec::with_capacity(key_size);
+    for i in 0..key_size {
+        let picked: Vec<u8> = enc_data
+            .clone()
+            .into_iter()
+            .skip(i)
+            .step_by(key_size)
+            .collect();
+        let (_, key_guess) = xor::crack_single_byte(&picked);
+        key.push(key_guess);
     }
-    let end = std::time::Instant::now();
-    println!("Took {} ms", (end - start).as_millis());
+    let dec_data = xor::apply_repeating(&enc_data, &key);
+    let key_str = String::from_utf8(key)?;
+    let dec_str = String::from_utf8(dec_data)?;
+    assert_eq!(key_str, expected_key);
+
+    println!(
+        "cracked cipher with key:\n\t{}\ntext:\n{}",
+        key_str, dec_str
+    );
     Ok(())
+}
+
+pub fn main() -> Result<()> {
+    bench::time(&solve)
 }

@@ -5,7 +5,6 @@ edition = "2021"
 build = "build.rs"
 
 [dependencies]
-itertools = "0.13.0"
 aes = "0.7.5"
 rand = "0.8.5"
 

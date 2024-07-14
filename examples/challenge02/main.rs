@@ -9,7 +9,7 @@ pub fn main() -> Result<()> {
     let plain_key = hex::decode(&hex_key)?;
     let plain_expected_output = hex::decode(&hex_expected_output)?;
 
-    let xord = xor::fixed_xor(&plain_input, &plain_key);
+    let xord = xor::appy_fixed(&plain_input, &plain_key);
     assert_eq!(xord, plain_expected_output);
 
     let xord_str = String::from_utf8(xord)?;

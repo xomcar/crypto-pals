@@ -1,0 +1,397 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'crypto_bros'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "crypto_bros",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge01'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge01",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge01",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge01'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge01",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge01",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge02'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge02",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge02",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge02'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge02",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge02",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge03'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge03",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge03",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge03'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge03",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge03",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge04'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge04",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge04",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge04'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge04",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge04",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge05'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge05",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge05",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge05'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge05",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge05",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge06'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge06",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge06",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge06'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge06",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge06",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge07'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge07",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge07",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge07'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge07",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge07",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge08'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge08",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge08",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge08'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge08",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge08",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge09'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge09",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge09",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge09'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge09",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge09",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge11'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge11",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge11",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge11'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge11",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge11",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

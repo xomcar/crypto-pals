@@ -1,5 +1,5 @@
 use crate::error::Result;
-use crate::xor::fixed_xor;
+use crate::xor::appy_fixed;
 use aes::cipher::{generic_array::GenericArray, BlockDecrypt, NewBlockCipher};
 use aes::{Aes128, BlockEncrypt};
 
@@ -18,7 +18,7 @@ pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
         if pt.len() != chunk_size {
             plain_text = pkcs7(pt, chunk_size);
         }
-        let scrambled = fixed_xor(&previous_ct, &plain_text);
+        let scrambled = appy_fixed(&previous_ct, &plain_text);
         let mut input = GenericArray::clone_from_slice(&scrambled);
         cipher.encrypt_block(&mut input);
         previous_ct = input.to_vec();
@@ -40,7 +40,7 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     for ct in chunks {
         let mut block_dec = GenericArray::clone_from_slice(ct);
         cipher.decrypt_block(&mut block_dec);
-        let plain_text = fixed_xor(&block_dec, &prev_ct);
+        let plain_text = appy_fixed(&block_dec, &prev_ct);
         prev_ct = ct.to_vec();
         dec.append(&mut plain_text.clone());
     }
