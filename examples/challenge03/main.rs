@@ -17,5 +17,7 @@ pub fn solve() -> Result<()> {
 }
 
 pub fn main() -> Result<()> {
-    bench::time(&solve)
+    let (res, duration) = bench!(solve());
+    println!("took: {}", duration.as_millis());
+    res
 }

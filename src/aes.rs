@@ -3,11 +3,13 @@ use crate::xor::appy_fixed;
 use aes::cipher::{generic_array::GenericArray, BlockDecrypt};
 use aes::cipher::{BlockEncrypt, KeyInit};
 use aes::Aes128;
+use rand::Rng;
+use std::fmt;
 
 pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     let chunk_size = key.len();
     if iv.len() != chunk_size {
-        return Err("Invalid iv len".into());
+        return Err("invalid iv len".into());
     }
     let key = GenericArray::clone_from_slice(key);
     let cipher = Aes128::new(&key);
@@ -31,7 +33,7 @@ pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
 pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     let chunk_size = key.len();
     if iv.len() != chunk_size {
-        return Err("Invalid iv len".into());
+        return Err("invalid iv len".into());
     }
     let key = GenericArray::clone_from_slice(key);
     let cipher = Aes128::new(&key);
@@ -119,7 +121,7 @@ pub fn pad_pkcs7(s: &[u8], sz: usize) -> Vec<u8> {
 pub fn strip_pkcs7(s: &[u8]) -> Result<Vec<u8>> {
     let last = s[s.len() - 1] as usize;
     if last == 0 || (s.len() < last) || s[s.len() - last..].windows(2).any(|w| w[0] != w[1]) {
-        return Err("Invalid padding".into());
+        return Err("invalid padding".into());
     }
 
     Ok(s[0..(s.len() - last)].to_vec())
@@ -132,4 +134,41 @@ pub fn test_padding() {
     let unpadded_data = String::from_utf8(strip_pkcs7(&padded_data).unwrap()).unwrap();
     assert_eq!(padded_data, "YELLOW SUBMARINE\x04\x04\x04\x04".as_bytes());
     assert_eq!(unpadded_data, data);
+}
+
+#[derive(PartialEq, Debug, Clone, Copy)]
+pub enum AESType {
+    ECB,
+    CBC,
+}
+
+impl fmt::Display for AESType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AESType::CBC => write!(f, "CBC"),
+            AESType::ECB => write!(f, "ECB"),
+        }
+    }
+}
+
+pub fn enc_oracle<R: Rng + ?Sized>(
+    rng: &mut R,
+    input_data: &[u8],
+    enc_type: AESType,
+) -> Result<Vec<u8>> {
+    let pad_len = (rng.gen::<usize>() % 5) + 5;
+    let mut front_pad: Vec<u8> = (0..16).map(|_| rng.gen()).collect();
+    let mut back_pad: Vec<u8> = (0..16).map(|_| rng.gen()).collect();
+    let mut padded = Vec::with_capacity(input_data.len() + 2 * pad_len);
+    padded.append(&mut input_data.to_vec());
+    padded.append(&mut front_pad);
+    padded.append(&mut back_pad);
+    let key: Vec<u8> = (0..16).map(|_| rng.gen()).collect();
+    match enc_type {
+        AESType::CBC => {
+            let iv: Vec<u8> = (0..16).map(|_| rng.gen()).collect();
+            encrypt_cbc(&padded, &key, &iv)
+        }
+        AESType::ECB => encrypt_ecb(&padded, &key),
+    }
 }

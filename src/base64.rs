@@ -60,7 +60,7 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>> {
             '+' => Ok(62),
             '/' => Ok(63),
             '=' => Ok(64),  // Padding character
-            _ => Err(format!("Invalid character in Base64 string {}", c)),
+            _ => Err(format!("invalid character in Base64 string {}", c)),
         }{
             buffer[buffer_len] = number;
             buffer_len += 1;
@@ -80,7 +80,7 @@ pub fn decode(encoded: &str) -> Result<Vec<u8>> {
                 buffer_len = 0;
             }
         } else {
-            return Err("Invalid base64 string".into());
+            return Err("invalid base64 string".into());
         }
     }
 

@@ -3,14 +3,14 @@ use std::fmt::Write;
 
 pub fn decode(hex: &str) -> Result<Vec<u8>> {
     if hex.len() % 2 != 0 {
-        return Err("Hex string must have an even length".into());
+        return Err("hex string must have an even length".into());
     }
 
     let mut output = Vec::new();
 
     for i in (0..hex.len()).step_by(2) {
         let byte_str = &hex[i..i + 2];
-        let byte = u8::from_str_radix(byte_str, 16).map_err(|_| "Invalid hex string")?;
+        let byte = u8::from_str_radix(byte_str, 16).map_err(|_| "invalid hex string")?;
         output.push(byte);
     }
 
