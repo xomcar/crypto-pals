@@ -30,6 +30,6 @@ pub fn solve() -> Result<()> {
 
 pub fn main() -> Result<()> {
     let (res, duration) = bench!(solve());
-    println!("took: {}", duration.as_millis());
+    println!("took: {}ms", duration.as_millis());
     res
 }

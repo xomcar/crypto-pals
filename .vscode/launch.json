@@ -392,6 +392,42 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
+        },{
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge12'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge12",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge12",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in example 'challenge12'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--example=challenge12",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge12",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

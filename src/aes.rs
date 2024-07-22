@@ -172,3 +172,33 @@ pub fn enc_oracle<R: Rng + ?Sized>(
         AESType::ECB => encrypt_ecb(&padded, &key),
     }
 }
+
+type EncFun<'a> = &'a mut dyn FnMut(&[u8]) -> Result<Vec<u8>>;
+
+pub fn find_block_len(
+    enc_func : EncFun, max_len : usize
+) -> Result<usize> {
+    let ct_size : usize = enc_func("".as_bytes())?.len();
+    for i in 0..max_len {
+        let input = "A".repeat(i).into_bytes();
+        let curr_size = enc_func(&input)?.len();
+        if curr_size != ct_size {
+            return Ok(curr_size-ct_size)
+        }
+    }
+    Err("Could not infer block size, maybe max len is too low?".into())
+}
+
+pub fn find_text_len(
+    enc_func : EncFun, block_size : usize,
+) -> Result<usize> {
+    let ct_size : usize = enc_func("".as_bytes())?.len();
+    for i in 0..block_size {
+        let input = "A".repeat(i).into_bytes();
+        let curr_size = enc_func(&input)?.len();
+        if curr_size != ct_size {
+            return Ok(curr_size-block_size-i+1) // pad size is 15 when the block overflows
+        }
+    }
+    Err("Could not infer text size, maybe block is wrong?".into())
+}
