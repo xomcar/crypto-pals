@@ -68,7 +68,7 @@ pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
     Ok(enc)
 }
 
-pub fn decrypt_ecb(data: &[u8], key: &[u8]) -> Vec<u8> {
+pub fn decrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
     let key = GenericArray::clone_from_slice(key);
     let mut blocks = vec![];
     (0..data.len()).step_by(16).for_each(|x| {
@@ -77,8 +77,8 @@ pub fn decrypt_ecb(data: &[u8], key: &[u8]) -> Vec<u8> {
 
     let cipher = Aes128::new(&key);
     cipher.decrypt_blocks(&mut blocks);
-
-    blocks.iter().flatten().map(|&x| x as u8).collect()
+    let result: Vec<u8> = blocks.iter().flatten().map(|&x| x as u8).collect();
+    strip_pkcs7(&result)
 }
 
 #[test]
@@ -173,31 +173,28 @@ pub fn enc_oracle<R: Rng + ?Sized>(
     }
 }
 
-type EncFun<'a> = &'a mut dyn FnMut(&[u8]) -> Result<Vec<u8>>;
+pub type EncFun<'a> = &'a mut dyn FnMut(&[u8]) -> Result<Vec<u8>>;
+pub type DecFun<'a> = &'a mut dyn FnMut(&[u8]) -> Result<Vec<u8>>;
 
-pub fn find_block_len(
-    enc_func : EncFun, max_len : usize
-) -> Result<usize> {
-    let ct_size : usize = enc_func("".as_bytes())?.len();
+pub fn find_block_len(enc_func: EncFun, max_len: usize) -> Result<usize> {
+    let ct_size: usize = enc_func("".as_bytes())?.len();
     for i in 0..max_len {
         let input = "A".repeat(i).into_bytes();
         let curr_size = enc_func(&input)?.len();
         if curr_size != ct_size {
-            return Ok(curr_size-ct_size)
+            return Ok(curr_size - ct_size);
         }
     }
     Err("Could not infer block size, maybe max len is too low?".into())
 }
 
-pub fn find_text_len(
-    enc_func : EncFun, block_size : usize,
-) -> Result<usize> {
-    let ct_size : usize = enc_func("".as_bytes())?.len();
+pub fn find_text_len(enc_func: EncFun, block_size: usize) -> Result<usize> {
+    let ct_size: usize = enc_func("".as_bytes())?.len();
     for i in 0..block_size {
         let input = "A".repeat(i).into_bytes();
         let curr_size = enc_func(&input)?.len();
         if curr_size != ct_size {
-            return Ok(curr_size-block_size-i+1) // pad size is 15 when the block overflows
+            return Ok(curr_size - block_size - i + 1); // pad size is 15 when the block overflows
         }
     }
     Err("Could not infer text size, maybe block is wrong?".into())

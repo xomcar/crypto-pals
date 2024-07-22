@@ -6,3 +6,4 @@ pub mod frequency;
 pub mod hex;
 pub mod io;
 pub mod xor;
+pub mod cookie;
