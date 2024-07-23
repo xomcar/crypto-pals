@@ -71,11 +71,11 @@ fn solve() -> Result<()> {
 
     let mut decrypted_text = Vec::with_capacity(999);
 
-    // do first row
     let start_index = prepend_len - prepend_fill;
     for i in start_index..text_len {
         let index;
         let padding_amount;
+        // first row and the others require differnt handling
         if i < start_index + mandatory_padding {
             index = (block_len) * (i / (block_len) + 1) - 1;
             padding_amount = (mandatory_padding - 1) - (i % block_len);
