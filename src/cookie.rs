@@ -7,9 +7,9 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize, Serialize, PartialEq)]
 pub struct UserProfile {
-    email: String,
+    pub email: String,
     uid: u32,
-    role: Role,
+    pub role: Role,
 }
 
 impl UserProfile {
@@ -26,7 +26,7 @@ impl UserProfile {
 }
 
 #[derive(Debug, Deserialize, Serialize, PartialEq)]
-enum Role {
+pub enum Role {
     #[serde(rename = "user")]
     User,
     #[serde(rename = "admin")]

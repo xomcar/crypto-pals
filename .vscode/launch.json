@@ -392,7 +392,8 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
-        },{
+        },
+        {
             "type": "lldb",
             "request": "launch",
             "name": "Debug example 'challenge12'",
@@ -428,6 +429,24 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
-        }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge13'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge13",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge13",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
     ]
 }
