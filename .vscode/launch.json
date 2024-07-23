@@ -448,5 +448,23 @@
             "args": [],
             "cwd": "${workspaceFolder}"
         },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug example 'challenge14'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--example=challenge14",
+                    "--package=crypto-bros"
+                ],
+                "filter": {
+                    "name": "challenge14",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
     ]
 }

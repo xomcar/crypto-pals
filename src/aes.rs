@@ -117,7 +117,7 @@ pub fn pad_pkcs7(s: &[u8], sz: usize) -> Vec<u8> {
 pub fn strip_pkcs7(s: &[u8]) -> Result<Vec<u8>> {
     let last = s[s.len() - 1] as usize;
     if last == 0 || (s.len() < last) || s[s.len() - last..].windows(2).any(|w| w[0] != w[1]) {
-        return Err("invalid padding".into());
+        return Ok(s.to_vec());
     }
 
     Ok(s[0..(s.len() - last)].to_vec())
@@ -174,7 +174,7 @@ pub type DecFun<'a> = &'a mut dyn FnMut(&[u8]) -> Result<Vec<u8>>;
 
 pub fn find_block_len(enc_func: EncFun, max_len: usize) -> Result<usize> {
     let ct_size: usize = enc_func("".as_bytes())?.len();
-    for i in 0..max_len {
+    for i in 1..max_len {
         let input = "A".repeat(i).into_bytes();
         let curr_size = enc_func(&input)?.len();
         if curr_size != ct_size {
@@ -186,7 +186,7 @@ pub fn find_block_len(enc_func: EncFun, max_len: usize) -> Result<usize> {
 
 pub fn find_text_len(enc_func: EncFun, block_size: usize) -> Result<usize> {
     let ct_size: usize = enc_func("".as_bytes())?.len();
-    for i in 0..block_size {
+    for i in 1..block_size + 1 {
         let input = "A".repeat(i).into_bytes();
         let curr_size = enc_func(&input)?.len();
         if curr_size != ct_size {
