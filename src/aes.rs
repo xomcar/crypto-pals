@@ -11,8 +11,7 @@ pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     if iv.len() != chunk_size {
         return Err("invalid iv len".into());
     }
-    let key = GenericArray::clone_from_slice(key);
-    let cipher = Aes128::new(&key);
+    let cipher = Aes128::new(key.try_into()?);
     let chunks: Vec<&[u8]> = pt.chunks(chunk_size).collect();
     let mut previous_ct = iv.to_vec();
     let mut enc = vec![];
@@ -35,8 +34,7 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     if iv.len() != chunk_size {
         return Err("invalid iv len".into());
     }
-    let key = GenericArray::clone_from_slice(key);
-    let cipher = Aes128::new(&key);
+    let cipher = Aes128::new(key.try_into()?);
     let mut dec = vec![];
     let chunks: Vec<&[u8]> = ct.chunks(chunk_size).collect();
     let mut prev_ct = iv.to_vec();
@@ -51,8 +49,7 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
 }
 
 pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
-    let key = GenericArray::clone_from_slice(key);
-    let cipher = Aes128::new(&key);
+    let cipher = Aes128::new(key.try_into()?);
     let chunk_size = key.len();
     let chunks: Vec<&[u8]> = data.chunks(chunk_size).collect();
     let mut enc = vec![];
@@ -69,13 +66,12 @@ pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
 }
 
 pub fn decrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
-    let key = GenericArray::clone_from_slice(key);
     let mut blocks = vec![];
     (0..data.len()).step_by(16).for_each(|x| {
         blocks.push(GenericArray::clone_from_slice(&data[x..x + 16]));
     });
 
-    let cipher = Aes128::new(&key);
+    let cipher = Aes128::new(key.try_into()?);
     cipher.decrypt_blocks(&mut blocks);
     let result: Vec<u8> = blocks.iter().flatten().map(|&x| x as u8).collect();
     strip_pkcs7(&result)

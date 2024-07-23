@@ -47,13 +47,13 @@ fn user_profile(mail: &str) -> Result<UserProfile> {
     Ok(result)
 }
 
-pub fn encrypt_user_cookie(mail: &str, enc_func: EncFun) -> Result<Vec<u8>> {
+pub fn encrypt_user(mail: &str, enc_func: EncFun) -> Result<Vec<u8>> {
     let profile = user_profile(mail)?;
     let profile_str = profile.to_str()?;
     enc_func(profile_str.as_bytes())
 }
 
-pub fn decrypt_user_cookie(input: &[u8], dec_func: DecFun) -> Result<UserProfile> {
+pub fn decrypt_user(input: &[u8], dec_func: DecFun) -> Result<UserProfile> {
     let dec = dec_func(input)?;
     UserProfile::from_str(String::from_utf8(dec)?.as_str())
 }
@@ -68,8 +68,8 @@ fn test_enc() {
     rand::thread_rng().fill(&mut key);
     let mut enc_fun = |data: &[u8]| encrypt_ecb(&data, &key);
     let mut dec_fun = |data: &[u8]| decrypt_ecb(&data, &key);
-    let enc = encrypt_user_cookie(mail, &mut enc_fun).unwrap();
-    let dec = decrypt_user_cookie(&enc, &mut dec_fun).unwrap();
+    let enc = encrypt_user(mail, &mut enc_fun).unwrap();
+    let dec = decrypt_user(&enc, &mut dec_fun).unwrap();
     assert_eq!(mail, dec.email);
     println!("{:?}", dec);
 }
