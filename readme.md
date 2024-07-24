@@ -16,7 +16,7 @@
 - [x] 12 - Byte-at-a-time ECB decryption (Simple) 
 - [x] 13 - ECB cut-and-paste 
 - [x] 14 - Byte-at-a-time ECB decryption (Harder) 
-- [ ] 15 - PKCS#7 padding validation 
+- [x] 15 - PKCS#7 padding validation 
 - [ ] 16 - CBC bitflipping attacks 
 - [ ] 17 - The CBC padding oracle 
 - [ ] 18 - Implement CTR, the stream cipher mode 

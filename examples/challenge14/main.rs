@@ -107,7 +107,7 @@ fn solve() -> Result<()> {
         }
     }
 
-    let stripped = aes::strip_pkcs7(&decrypted_text)?;
+    let stripped = aes::strip_pkcs7(&decrypted_text);
 
     println!("Decrypted text:\n{}", String::from_utf8(stripped)?);
 

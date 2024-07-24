@@ -45,7 +45,7 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
         prev_ct = ct.to_vec();
         dec.append(&mut plain_text.clone());
     }
-    strip_pkcs7(&dec)
+    Ok(strip_pkcs7(&dec))
 }
 
 pub fn encrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
@@ -74,7 +74,7 @@ pub fn decrypt_ecb(data: &[u8], key: &[u8]) -> Result<Vec<u8>> {
     let cipher = Aes128::new(key.try_into()?);
     cipher.decrypt_blocks(&mut blocks);
     let result: Vec<u8> = blocks.iter().flatten().map(|&x| x as u8).collect();
-    strip_pkcs7(&result)
+    Ok(strip_pkcs7(&result))
 }
 
 #[test]
@@ -114,22 +114,48 @@ pub fn pad_pkcs7(s: &[u8], sz: usize) -> Vec<u8> {
     res
 }
 
-pub fn strip_pkcs7(s: &[u8]) -> Result<Vec<u8>> {
+pub fn strip_pkcs7(s: &[u8]) -> Vec<u8> {
     let last = s[s.len() - 1] as usize;
     if last == 0 || (s.len() < last) || s[s.len() - last..].windows(2).any(|w| w[0] != w[1]) {
-        return Ok(s.to_vec());
+        return s.to_vec();
+    }
+
+    s[0..(s.len() - last)].to_vec()
+}
+
+pub fn try_strip_pkcs7(s: &[u8]) -> Result<Vec<u8>> {
+    let last = s[s.len() - 1] as usize;
+    if last == 0 || (s.len() < last) || s[s.len() - last..].windows(2).any(|w| w[0] != w[1]) {
+        return Err("invalid padding".into());
     }
 
     Ok(s[0..(s.len() - last)].to_vec())
 }
 
 #[test]
-pub fn test_padding() {
+fn test_padding() {
     let data = "YELLOW SUBMARINE";
     let padded_data = pad_pkcs7(data.as_bytes(), 20);
-    let unpadded_data = String::from_utf8(strip_pkcs7(&padded_data).unwrap()).unwrap();
+    let unpadded_data = String::from_utf8(strip_pkcs7(&padded_data)).unwrap();
     assert_eq!(padded_data, "YELLOW SUBMARINE\x04\x04\x04\x04".as_bytes());
     assert_eq!(unpadded_data, data);
+}
+
+#[test]
+fn test_strip() {
+    let data1 = b"ICE ICE BABY\x01\x02\x03\x04";
+    let data2 = b"ICE ICE BABY\x05\x05\x05\x05";
+    let data3 = b"ICE ICE BABY\x04\x04\x04\x04";
+
+    assert_eq!(
+        try_strip_pkcs7(data1).unwrap_err().as_ref().to_string(),
+        "invalid padding"
+    );
+    assert_eq!(
+        try_strip_pkcs7(data2).unwrap_err().as_ref().to_string(),
+        "invalid padding"
+    );
+    assert_eq!(try_strip_pkcs7(data3).unwrap(), b"ICE ICE BABY");
 }
 
 #[derive(PartialEq, Debug, Clone, Copy)]
