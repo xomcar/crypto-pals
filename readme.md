@@ -17,7 +17,7 @@
 - [x] 13 - ECB cut-and-paste 
 - [x] 14 - Byte-at-a-time ECB decryption (Harder) 
 - [x] 15 - PKCS#7 padding validation 
-- [ ] 16 - CBC bitflipping attacks 
+- [x] 16 - CBC bitflipping attacks 
 - [ ] 17 - The CBC padding oracle 
 - [ ] 18 - Implement CTR, the stream cipher mode 
 - [ ] 19 - Break fixed-nonce CTR mode using substitutions 

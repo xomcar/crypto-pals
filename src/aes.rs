@@ -1,5 +1,5 @@
 use crate::error::Result;
-use crate::xor::appy_fixed;
+use crate::xor::apply_fixed;
 use aes::cipher::{generic_array::GenericArray, BlockDecrypt};
 use aes::cipher::{BlockEncrypt, KeyInit};
 use aes::Aes128;
@@ -20,7 +20,7 @@ pub fn encrypt_cbc(pt: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
         if pt.len() != chunk_size {
             plain_text = pad_pkcs7(pt, chunk_size);
         }
-        let scrambled = appy_fixed(&previous_ct, &plain_text);
+        let scrambled = apply_fixed(&previous_ct, &plain_text)?;
         let mut input = GenericArray::clone_from_slice(&scrambled);
         cipher.encrypt_block(&mut input);
         previous_ct = input.to_vec();
@@ -34,14 +34,20 @@ pub fn decrypt_cbc(ct: &[u8], key: &[u8], iv: &[u8]) -> Result<Vec<u8>> {
     if iv.len() != chunk_size {
         return Err("invalid iv len".into());
     }
+    if chunk_size % 16 != 0 {
+        return Err("invalid key len".into());
+    }
+    if ct.len() % 16 != 0 {
+        return Err("invalid cypher text len".into());
+    }
     let cipher = Aes128::new(key.try_into()?);
-    let mut dec = vec![];
+    let mut dec = Vec::with_capacity(ct.len());
     let chunks: Vec<&[u8]> = ct.chunks(chunk_size).collect();
     let mut prev_ct = iv.to_vec();
     for ct in chunks {
         let mut block_dec = GenericArray::clone_from_slice(ct);
         cipher.decrypt_block(&mut block_dec);
-        let plain_text = appy_fixed(&block_dec, &prev_ct);
+        let plain_text = apply_fixed(&block_dec, &prev_ct)?;
         prev_ct = ct.to_vec();
         dec.append(&mut plain_text.clone());
     }

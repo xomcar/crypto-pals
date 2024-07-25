@@ -13,10 +13,10 @@ pub fn solve() -> Result<()> {
             .skip(i)
             .step_by(key_size)
             .collect();
-        let (_, key_guess) = xor::crack_single_byte(&picked);
+        let (_, key_guess) = xor::crack_single_byte(&picked)?;
         key.push(key_guess);
     }
-    let dec_data = xor::apply_repeating(&enc_data, &key);
+    let dec_data = xor::apply_repeating(&enc_data, &key)?;
     let key_str = String::from_utf8(key)?;
     let dec_str = String::from_utf8(dec_data)?;
     assert_eq!(key_str, expected_key);

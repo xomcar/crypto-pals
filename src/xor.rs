@@ -2,21 +2,19 @@ use crate::error::Result;
 use crate::frequency::ENGLISH_ASCII_FREQUENCY;
 use std::cmp::min;
 
-pub fn appy_fixed(a: &[u8], b: &[u8]) -> Vec<u8> {
+pub fn apply_fixed(a: &[u8], b: &[u8]) -> Result<Vec<u8>> {
     if a.len() != b.len() {
-        panic!("cannot xor different lenght buffer!")
-    } else {
-        return a
-            .into_iter()
-            .zip(b.into_iter())
-            .map(|(x, y)| x ^ y)
-            .collect();
+        return Err("cannot xor different lenght buffer!".into());
     }
+    Ok(a.into_iter()
+        .zip(b.into_iter())
+        .map(|(x, y)| x ^ y)
+        .collect())
 }
 
-pub fn apply_repeating(plain: &[u8], key: &[u8]) -> Vec<u8> {
+pub fn apply_repeating(plain: &[u8], key: &[u8]) -> Result<Vec<u8>> {
     let extended_key = key.repeat(plain.len() / key.len() + 1);
-    appy_fixed(plain, &extended_key[0..plain.len()])
+    apply_fixed(plain, &extended_key[0..plain.len()])
 }
 
 pub fn get_english_lang_score(s: &[u8]) -> f32 {
@@ -32,13 +30,13 @@ pub fn get_english_lang_score(s: &[u8]) -> f32 {
     return score;
 }
 
-pub fn crack_single_byte_slow(input: &[u8]) -> (Vec<u8>, u8) {
+pub fn crack_single_byte_slow(input: &[u8]) -> Result<(Vec<u8>, u8)> {
     let mut best_guess = vec![];
     let mut best_score = f32::MAX;
     let mut key_guess: u8 = 0;
     for key in 0u8..u8::MAX {
         let secret = vec![key; input.len()];
-        let decrypted = appy_fixed(&secret, &input);
+        let decrypted = apply_fixed(&secret, &input)?;
         let score = get_english_lang_score(&decrypted);
         if score < best_score {
             best_score = score;
@@ -46,10 +44,10 @@ pub fn crack_single_byte_slow(input: &[u8]) -> (Vec<u8>, u8) {
             best_guess = decrypted;
         }
     }
-    (best_guess, key_guess)
+    Ok((best_guess, key_guess))
 }
 
-pub fn crack_single_byte(input: &[u8]) -> (Vec<u8>, u8) {
+pub fn crack_single_byte(input: &[u8]) -> Result<(Vec<u8>, u8)> {
     let mut freqs: Vec<f32> = vec![];
     for letter in 0..256 {
         freqs
@@ -72,9 +70,9 @@ pub fn crack_single_byte(input: &[u8]) -> (Vec<u8>, u8) {
     }
 
     let key = vec![best_guess; input.len()];
-    let unenc = appy_fixed(input, &key);
+    let unenc = apply_fixed(input, &key)?;
 
-    (unenc, best_guess)
+    Ok((unenc, best_guess))
 }
 
 pub fn hamming_dist(a: &[u8], b: &[u8]) -> Result<usize> {
@@ -128,7 +126,7 @@ pub fn test_keysize() {
 Maecenas finibus sed magna in eleifend. Aliquam non lorem et tortor placerat porta et in augue. Pellentesque faucibus risus eget vehicula facilisis. Suspendisse et arcu nec mauris consequat interdum. Aenean eros neque, pulvinar ac dapibus in, sagittis in sapien. Sed nec augue et quam lacinia tristique quis sed lacus. Nam ac augue dui. In ornare tincidunt placerat. In mattis enim elit, nec dapibus lectus pellentesque ut. Quisque congue non risus sed luctus.
 Vivamus gravida pretium malesuada. Aenean efficitur sollicitudin libero, eget elementum dolor auctor quis. Sed dignissim augue id ex tempor, vitae viverra nisi dictum. Aenean imperdiet, augue vitae aliquet pharetra, odio lacus aliquet urna, sit amet eleifend nisl nisl in eros. Mauris eget sapien fermentum, sagittis elit eget, porttitor lectus. Vestibulum molestie erat eu est sodales, vel rutrum nisi molestie. Ut purus massa, semper ac sem non, venenatis egestas diam. Suspendisse a dolor dignissim, tempor nulla eget, fringilla nulla. Aenean rhoncus, ex et scelerisque tempus, justo mi dapibus arcu, ut fermentum lacus augue vitae nisi. Sed quis ligula dolor. Donec nisl enim, blandit vel enim eget, sollicitudin tincidunt risus. Morbi convallis a dui id pharetra. Sed accumsan orci vel nulla commodo, ut ullamcorper velit consectetur. ";
     let key = "hunter2";
-    let enc = apply_repeating(plain_txt.as_bytes(), key.as_bytes());
+    let enc = apply_repeating(plain_txt.as_bytes(), key.as_bytes()).unwrap();
     let est_key_sizes = guess_keysize(&enc, 10).unwrap();
     let mut found = false;
     for (_, sz) in est_key_sizes {
@@ -149,6 +147,6 @@ pub fn check_xor_algo() {
     let input1 = hex::decode(EXAMPLE_INPUT_1).unwrap();
     let input2 = hex::decode(EXAMPLE_INPUT_2).unwrap();
     let expected = hex::decode(EXAMPLE_OUTPUT).unwrap();
-    let output = xor::appy_fixed(&input1, &input2);
+    let output = xor::apply_fixed(&input1, &input2).unwrap();
     assert_eq!(expected, output);
 }
